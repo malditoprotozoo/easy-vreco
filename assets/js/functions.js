@@ -16,6 +16,21 @@ const initMap = () => {
     center: {lat: -34.397, lng: 150.644}
   });
 
+  var image = {
+    url: "https://maps.gstatic.com/mapfiles/ms2/micons/grn-pushpin.png",
+    scaledSize: new google.maps.Size(32, 32)
+  };
+  marker = new google.maps.Marker({
+    map: map,
+    draggable: true,
+    icon: image,
+    animation: google.maps.Animation.DROP,
+    position: {
+      lat: 59.909144,
+      lng: 10.7436936
+    }
+  });
+
   /* InfoWindow es una función de Google que permite dibujar sobre el mapa.
   * Primero, creamos una variable que va a contener la función, para mantenerla
   * "abreviada" y luego, si el navegador cuenta con geolocalización y el usuario
@@ -31,9 +46,9 @@ const initMap = () => {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
-      infoWindow.setPosition(pos);
-      infoWindow.setContent('Location found');
-      infoWindow.open(map);
+      marker.setPosition(pos);
+      marker.setTitle('Location found');
+      //infoWindow.open(map);
       map.setCenter(pos);
     }, function() {
       const handleLocationError = (browserHasGeolocation, infoWindow, pos) => {
@@ -50,21 +65,22 @@ const initMap = () => {
   new AutocompleteDirectionsHandler(map);
 };
 
+// No usamos funciones flecha porque generaba conflicto con this
 function AutocompleteDirectionsHandler(map) {
   this.map = map;
   this.originPlaceId = null;
   this.destinationPlaceId = null;
   this.travelMode = 'WALKING';
-  var originInput = document.getElementById('origin-input');
-  var destinationInput = document.getElementById('destination-input');
-  var modeSelector = document.getElementById('mode-selector');
+  let originInput = document.getElementById('origin-input');
+  let destinationInput = document.getElementById('destination-input');
+  let modeSelector = document.getElementById('mode-selector');
   this.directionsService = new google.maps.DirectionsService;
   this.directionsDisplay = new google.maps.DirectionsRenderer;
   this.directionsDisplay.setMap(map);
 
-  var originAutocomplete = new google.maps.places.Autocomplete(
+  let originAutocomplete = new google.maps.places.Autocomplete(
       originInput, {placeIdOnly: true});
-  var destinationAutocomplete = new google.maps.places.Autocomplete(
+  let destinationAutocomplete = new google.maps.places.Autocomplete(
       destinationInput, {placeIdOnly: true});
 
   this.setupClickListener('changemode-walking', 'WALKING');
@@ -82,8 +98,8 @@ function AutocompleteDirectionsHandler(map) {
 // Sets a listener on a radio button to change the filter type on Places
 // Autocomplete.
 AutocompleteDirectionsHandler.prototype.setupClickListener = function(id, mode) {
-  var radioButton = document.getElementById(id);
-  var me = this;
+  let radioButton = document.getElementById(id);
+  let me = this;
   radioButton.addEventListener('click', function() {
     me.travelMode = mode;
     me.route();
@@ -91,10 +107,10 @@ AutocompleteDirectionsHandler.prototype.setupClickListener = function(id, mode) 
 };
 
 AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function(autocomplete, mode) {
-  var me = this;
+  let me = this;
   autocomplete.bindTo('bounds', this.map);
   autocomplete.addListener('place_changed', function() {
-    var place = autocomplete.getPlace();
+    let place = autocomplete.getPlace();
     if (!place.place_id) {
       window.alert("Please select an option from the dropdown list.");
       return;
@@ -113,7 +129,7 @@ AutocompleteDirectionsHandler.prototype.route = function() {
   if (!this.originPlaceId || !this.destinationPlaceId) {
     return;
   }
-  var me = this;
+  let me = this;
 
   this.directionsService.route({
     origin: {'placeId': this.originPlaceId},
