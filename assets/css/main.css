@@ -1,14 +1,4 @@
-#google-map {
+#map {
   height: 50vh;
   width: 100%;
-}
-
-.findme,.route{
-  background-color:#FAAE27;
-  color:#fff;
-  margin: 30px;
-}
-
-.inpts{
-  margin-top:2rem;
 }
