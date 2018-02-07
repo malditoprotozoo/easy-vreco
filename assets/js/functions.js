@@ -36,18 +36,17 @@ const initMap = () => {
       infoWindow.open(map);
       map.setCenter(pos);
     }, function() {
+      const handleLocationError = (browserHasGeolocation, infoWindow, pos) => {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+          'Error: The Geolocation service failed.' :
+          'Error: Your browser doesn\'t support geolocation.');
+          infoWindow.open(map);
+      };
+      
       handleLocationError(true, infoWindow, map.getCenter());
     });
-  } else {
-    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-      infoWindow.setPosition(pos);
-      infoWindow.setContent(browserHasGeolocation ?
-        'Error: The Geolocation service failed.' :
-        'Error: Your browser doesn\'t support geolocation.');
-        infoWindow.open(map);
-    }
   };
-
   new AutocompleteDirectionsHandler(map);
 };
 
