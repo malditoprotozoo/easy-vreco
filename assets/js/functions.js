@@ -10,7 +10,7 @@ let infoWindow;
 */
 const initMap = () => {
   // La variable map será el mapa que creará el script de Google en nuestro ID map
-  let map = new google.maps.Map(document.getElementById('map'), {
+  map = new google.maps.Map(document.getElementById('map'), {
     mapTypeControl: false,
     zoom: 18,
     center: {lat: -34.397, lng: 150.644}
@@ -20,6 +20,7 @@ const initMap = () => {
     url: "https://maps.gstatic.com/mapfiles/ms2/micons/grn-pushpin.png",
     scaledSize: new google.maps.Size(32, 32)
   };
+  
   marker = new google.maps.Marker({
     map: map,
     draggable: true,
@@ -30,6 +31,16 @@ const initMap = () => {
       lng: 10.7436936
     }
   });
+  
+  marker.addListener('click', toggleBounce);
+  
+  function toggleBounce() {
+    if (marker.getAnimation() !== null) {
+      marker.setAnimation(null);
+    } else {
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+    }
+  }
 
   /* InfoWindow es una función de Google que permite dibujar sobre el mapa.
   * Primero, creamos una variable que va a contener la función, para mantenerla
@@ -143,3 +154,52 @@ AutocompleteDirectionsHandler.prototype.route = function() {
     }
   });
 };
+
+const findMe = () => {
+  infoWindow = new google.maps.InfoWindow;
+  var image = {
+    url: "https://maps.gstatic.com/mapfiles/ms2/micons/grn-pushpin.png",
+    scaledSize: new google.maps.Size(32, 32)
+  };
+  
+  marker = new google.maps.Marker({
+    map: map,
+    draggable: true,
+    icon: image,
+    animation: google.maps.Animation.DROP,
+    position: {
+      lat: 59.909144,
+      lng: 10.7436936
+    }
+  });
+  marker.addListener('click', toggleBounce);
+  
+  function toggleBounce() {
+    if (marker.getAnimation() !== null) {
+      marker.setAnimation(null);
+    } else {
+      marker.setAnimation(google.maps.Animation.BOUNCE);
+    }
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      let pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      marker.setPosition(pos);
+      marker.setTitle('Location found');
+      map.setCenter(pos);
+    }, function() {
+      const handleLocationError = (browserHasGeolocation, infoWindow, pos) => {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+          'Error: The Geolocation service failed.' :
+          'Error: Your browser doesn\'t support geolocation.');
+      };
+      
+      handleLocationError(true, infoWindow, map.getCenter());
+    });
+  };
+}
