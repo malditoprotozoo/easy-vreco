@@ -9,6 +9,12 @@ let infoWindow;
 * La función también ha sido "traducida" a ES6, por cuestiones de aprendizaje.
 */
 const initMap = () => {
+  $('#inputs-container').append(`<input id="origin-input" class="controls" type="text" placeholder="Enter an origin location">
+    <input id="destination-input" class="controls" type="text" placeholder="Enter a destination location">
+    <div id="mode-selector" class="controls"> <input type="radio" name="type" id="changemode-walking" checked="checked">
+    <label for="changemode-walking">Walking</label> <input type="radio" name="type" id="changemode-transit">
+    <label for="changemode-transit">Transit</label> <input type="radio" name="type" id="changemode-driving">
+    <label for="changemode-driving">Driving</label>`);
   // La variable map será el mapa que creará el script de Google en nuestro ID map
   let map = new google.maps.Map(document.getElementById('map'), {
     mapTypeControl: false,
@@ -18,7 +24,7 @@ const initMap = () => {
 
   var image = {
     url: "https://i.imgur.com/FrfPvsG.png",
-    scaledSize: new google.maps.Size(32, 32)
+    scaledSize: new google.maps.Size(82, 82)
   };
   marker = new google.maps.Marker({
     map: map,
