@@ -1,6 +1,7 @@
 // Definir estas variables fuera de la función para que sean globales
 let map;
 let infoWindow;
+let myPosition;
 
 /*
 * Función que comenzará cuando se cargue el documento. Normalmente Google
@@ -52,6 +53,9 @@ const initMap = () => {
         lat: position.coords.latitude,
         lng: position.coords.longitude
       };
+      myPosition = pos;
+      let geocoder = new google.maps.Geocoder;
+      geocodeLatLng(geocoder, map, infoWindow);
       marker.setPosition(pos);
       marker.setTitle('Location found');
       //infoWindow.open(map);
@@ -146,6 +150,24 @@ AutocompleteDirectionsHandler.prototype.route = function() {
       me.directionsDisplay.setDirections(response);
     } else {
       window.alert('Directions request failed due to ' + status);
+    }
+  });
+};
+
+const geocodeLatLng = (geocoder, map, infowindow) => {
+  let posStr = myPosition.lat + ',' + myPosition.lng;
+  let latlngStr = posStr.split(',', 2);
+  var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+  geocoder.geocode({'location': latlng}, function(results, status) {
+    if (status === 'OK') {
+      if (results[0]) {
+        $('#origin-input').val(results[0].formatted_address);
+        //infowindow.open(map, marker);
+      } else {
+        window.alert('No results found');
+      }
+    } else {
+      window.alert('Geocoder failed due to: ' + status);
     }
   });
 };
